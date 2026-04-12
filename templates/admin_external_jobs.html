@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}External Jobs & Applications - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2><i class="fas fa-globe me-2"></i> External Jobs Management</h2>
+    <p class="text-muted">Approve or reject jobs fetched from external sources</p>
+
+    <!-- External Jobs Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-briefcase"></i> Pending External Jobs</h5>
+        </div>
+        <div class="card-body">
+            {% if jobs %}
+                {% for job in jobs %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>{{ job.title }}</h5>
+                                <p class="text-muted">{{ job.company }} - {{ job.location }}</p>
+                                <p>{{ job.description[:200] }}...</p>
+                                <p><strong>Source:</strong> {{ job.source|title }} | 
+                                   <strong>Salary:</strong> {{ job.salary_min }} - {{ job.salary_max }} LPA</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <a href="{{ url_for('approve_external_job', job_id=job.id) }}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </a>
+                                <a href="{{ url_for('reject_external_job', job_id=job.id) }}" class="btn btn-danger btn-sm" 
+                                   onclick="return confirm('Reject and delete this job?')">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-success">No pending external jobs.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Student Applications Section -->
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-users"></i> Student Applications</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Applied On</th>
+                            <th>Current Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ app.student.full_name or app.student.email }}<br>
+                                <small class="text-muted">{{ app.student.email }}</small>
+                            </td>
+                            <td>{{ app.job.title }}</td>
+                            <td>{{ app.job.company }}</td>
+                            <td>{{ app.applied_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if app.status == 'pending' %}bg-warning
+                                    {% elif app.status == 'shortlisted' %}bg-success
+                                    {% elif app.status == 'rejected' %}bg-danger
+                                    {% elif app.status == 'hired' %}bg-primary
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ app.status|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('admin_approve_application', app_id=app.id) }}" class="btn btn-success" onclick="return confirm('Shortlist this student?')">
+                                        <i class="fas fa-check"></i> Shortlist
+                                    </a>
+                                    <a href="{{ url_for('admin_reject_application', app_id=app.id) }}" class="btn btn-danger" onclick="return confirm('Reject this application?')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </a>
+                                    <a href="{{ url_for('admin_hire_application', app_id=app.id) }}" class="btn btn-primary" onclick="return confirm('Mark as hired?')">
+                                        <i class="fas fa-user-check"></i> Hire
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="6" class="text-center">No applications yet.比亚</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <a href="{{ url_for('admin_revenue') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}

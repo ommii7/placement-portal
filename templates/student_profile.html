@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Left Column: Profile Card & Resume Info -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="bg-gradient-primary text-white text-center py-4">
+                    {% if current_user.profile_picture %}
+                        <img src="{{ url_for('static', filename=current_user.profile_picture) }}" 
+                             class="rounded-circle border border-3 border-white shadow-sm" 
+                             style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <i class="fas fa-user-circle fa-5x text-white"></i>
+                    {% endif %}
+                    <h4 class="mt-3 mb-0">{{ current_user.full_name or current_user.email.split('@')[0] }}</h4>
+                    <p class="small opacity-75">{{ current_user.email }}</p>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span><i class="fas fa-phone-alt me-2 text-primary"></i> Phone</span>
+                        <span>{{ current_user.phone or 'Not provided' }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span><i class="fas fa-calendar-alt me-2 text-primary"></i> Member Since</span>
+                        <span>{{ current_user.created_at.strftime('%b %Y') if current_user.created_at else 'N/A' }}</span>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <a href="{{ url_for('upload_resume') }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                            <i class="fas fa-upload me-2"></i>Upload Resume
+                        </a>
+                        {% if current_user.resume_path %}
+                            <span class="badge bg-success w-100 py-2">
+                                <i class="fas fa-check-circle me-1"></i> Resume Uploaded
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark w-100 py-2">
+                                <i class="fas fa-exclamation-triangle me-1"></i> Resume Missing
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills Card (if any) -->
+            {% if current_user.skills %}
+            <div class="card shadow-sm border-0 rounded-4 mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-code me-2"></i>Skills</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for skill in current_user.skills.split(',') %}
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2">{{ skill.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Edit Form -->
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-white border-0 pt-4">
+                    <h5 class="mb-0"><i class="fas fa-user-edit me-2 text-primary"></i>Edit Profile</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <!-- Personal Information -->
+                        <div class="bg-light p-3 rounded-4 mb-4">
+                            <h6 class="mb-3"><i class="fas fa-user me-2 text-primary"></i>Personal Information</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" name="full_name" class="form-control" value="{{ current_user.full_name or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" name="phone" class="form-control" value="{{ current_user.phone or '' }}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Bio / About Me</label>
+                                    <textarea name="bio" class="form-control" rows="2">{{ current_user.bio or '' }}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Profile Picture</label>
+                                    <input type="file" name="profile_pic" class="form-control" accept="image/*">
+                                    <small class="text-muted">Leave empty to keep current picture</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Education Details -->
+                        <div class="bg-light p-3 rounded-4 mb-4">
+                            <h6 class="mb-3"><i class="fas fa-graduation-cap me-2 text-primary"></i>Education</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">College / University</label>
+                                    <input type="text" name="college" class="form-control" value="{{ current_user.college or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Course / Degree</label>
+                                    <input type="text" name="course" class="form-control" value="{{ current_user.course or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Graduation Year</label>
+                                    <select name="graduation_year" class="form-select">
+                                        <option value="">Select Year</option>
+                                        {% for y in range(2020, 2030) %}
+                                            <option value="{{ y }}" {% if current_user.graduation_year == y %}selected{% endif %}>{{ y }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CGPA / Percentage</label>
+                                    <input type="number" step="0.01" name="cgpa" class="form-control" value="{{ current_user.cgpa or '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional Details -->
+                        <div class="bg-light p-3 rounded-4 mb-4">
+                            <h6 class="mb-3"><i class="fas fa-briefcase me-2 text-primary"></i>Professional Details</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Skills (comma separated)</label>
+                                    <input type="text" name="skills" class="form-control" value="{{ current_user.skills or '' }}" 
+                                           placeholder="Python, Java, React, SQL, AWS...">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Experience / Internships</label>
+                                    <textarea name="experience" class="form-control" rows="2">{{ current_user.experience or '' }}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Certifications</label>
+                                    <textarea name="certifications" class="form-control" rows="2">{{ current_user.certifications or '' }}</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Portfolio / GitHub URL</label>
+                                    <input type="url" name="portfolio_url" class="form-control" value="{{ current_user.portfolio_url or '' }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Expected Salary (LPA)</label>
+                                    <input type="number" step="0.5" name="expected_salary" class="form-control" value="{{ current_user.expected_salary or '' }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </button>
+                            <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary px-4">
+                                <i class="fas fa-arrow-left me-2"></i>Back
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .rounded-4 {
+        border-radius: 1rem;
+    }
+    .bg-light {
+        background-color: #f8f9fc !important;
+    }
+</style>
+{% if current_user.profile_picture %}
+    <img src="{{ url_for('static', filename=current_user.profile_picture) }}" 
+         class="rounded-circle border border-3 border-white shadow-sm" 
+         style="width: 120px; height: 120px; object-fit: cover;">
+{% else %}
+    <i class="fas fa-user-circle fa-5x text-white"></i>
+{% endif %}
+{% endblock %}

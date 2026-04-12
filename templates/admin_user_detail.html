@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}User Details - Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-user-circle me-2"></i> User Details</h2>
+        <a href="{{ url_for('admin_users') }}" class="btn btn-secondary">← Back to Users</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    {% if user.profile_picture %}
+                        <img src="{{ url_for('static', filename=user.profile_picture) }}" class="rounded-circle mb-3" width="150" height="150" style="object-fit: cover;">
+                    {% else %}
+                        <i class="fas fa-user-circle fa-5x text-secondary mb-3"></i>
+                    {% endif %}
+                    <h4>{{ user.full_name or 'N/A' }}</h4>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <p>
+                        {% if user.role == 'student' %}
+                            <span class="badge bg-primary">Student</span>
+                        {% elif user.role == 'hr' %}
+                            <span class="badge bg-success">HR</span>
+                        {% else %}
+                            <span class="badge bg-danger">Admin</span>
+                        {% endif %}
+                        {% if user.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Blocked</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <!-- Basic Information -->
+            <div class="card shadow mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th style="width: 30%;">Full Name</th><td>{{ user.full_name or 'Not provided' }}</td></tr>
+                        <tr><th>Email</th><td>{{ user.email }}</td></tr>
+                        <tr><th>Phone</th><td>{{ user.phone or 'Not provided' }}</td></tr>
+                        <tr><th>Member Since</th><td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else 'N/A' }}</td></tr>
+                        <tr><th>Status</th><td>{% if user.is_active %}Active{% else %}Blocked{% endif %}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Role-Specific Details -->
+            {% if user.role == 'student' %}
+            <div class="card shadow mb-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Educational Details</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th style="width: 30%;">College/University</th><td>{{ user.college or 'Not provided' }}</td></tr>
+                        <tr><th>Course/Degree</th><td>{{ user.course or 'Not provided' }}</td></tr>
+                        <tr><th>Branch/Specialization</th><td>{{ user.branch or 'Not provided' }}</td></tr>
+                        <tr><th>Graduation Year</th><td>{{ user.graduation_year or 'Not provided' }}</td></tr>
+                        <tr><th>CGPA/Percentage</th><td>{{ user.cgpa or 'Not provided' }}</td></tr>
+                        <tr><th>Backlogs</th><td>{{ user.backlogs or '0' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Professional Details</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th style="width: 30%;">Skills</th><td>{{ user.skills or 'Not provided' }}</td></tr>
+                        <tr><th>Experience</th><td>{{ user.experience or 'Not provided' }}</td></tr>
+                        <tr><th>Certifications</th><td>{{ user.certifications or 'Not provided' }}</td></tr>
+                        <tr><th>Portfolio/GitHub</th><td>{% if user.portfolio_url %}<a href="{{ user.portfolio_url }}" target="_blank">{{ user.portfolio_url }}</a>{% else %}Not provided{% endif %}</td></tr>
+                        <tr><th>Expected Salary</th><td>{{ user.expected_salary or 'Not provided' }} LPA</td></tr>
+                        <tr><th>Preferred Locations</th><td>{{ user.preferred_locations or 'Not provided' }}</td></tr>
+                        <tr><th>Languages</th><td>{{ user.languages or 'Not provided' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow mb-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Resume & Bio</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Bio:</strong></p>
+                    <p>{{ user.bio or 'Not provided' }}</p>
+                    <p><strong>Resume:</strong> 
+                        {% if user.resume_path %}
+                            <a href="{{ url_for('static', filename=user.resume_path.split('/')[-1] if '/' in user.resume_path else user.resume_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">Download Resume</a>
+                        {% else %}
+                            Not uploaded
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if user.role == 'hr' %}
+            <div class="card shadow mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-building me-2"></i>Company Details</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th style="width: 30%;">Company Name</th><td>{{ user.company_name or 'Not provided' }}</td></tr>
+                        <tr><th>Company Website</th><td>{% if user.company_website %}<a href="{{ user.company_website }}" target="_blank">{{ user.company_website }}</a>{% else %}Not provided{% endif %}</td></tr>
+                        <tr><th>Industry</th><td>{{ user.industry or 'Not provided' }}</td></tr>
+                        <tr><th>Company Size</th><td>{{ user.company_size or 'Not provided' }}</td></tr>
+                        <tr><th>Company Address</th><td>{{ user.company_address or 'Not provided' }}</td></tr>
+                        <tr><th>Company Description</th><td>{{ user.company_description or 'Not provided' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow mb-3">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-user-tie me-2"></i>HR Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th style="width: 30%;">Designation</th><td>{{ user.designation or 'Not provided' }}</td></tr>
+                        <tr><th>Department</th><td>{{ user.department or 'Not provided' }}</td></tr>
+                        <tr><th>HR Experience</th><td>{{ user.hr_experience or 'Not provided' }} years</td></tr>
+                        <tr><th>LinkedIn</th><td>{% if user.linkedin %}<a href="{{ user.linkedin }}" target="_blank">{{ user.linkedin }}</a>{% else %}Not provided{% endif %}</td></tr>
+                        <tr><th>Positions Hiring</th><td>{{ user.positions_hiring or 'Not provided' }}</td></tr>
+                        <tr><th>Openings Count</th><td>{{ user.openings_count or 'Not provided' }}</td></tr>
+                        <tr><th>Preferred Institutes</th><td>{{ user.preferred_institutes or 'Not provided' }}</td></tr>
+                        <tr><th>Hiring Timeline</th><td>{{ user.hiring_timeline or 'Not provided' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Statistics -->
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        {% if user.role == 'student' %}
+                            <tr><th>Total Applications</th><td>{{ user.applications|length }}</td></tr>
+                            <tr><th>Subscription Status</th><td>{% if user.is_subscribed %}Active (ends {{ user.subscription_end_date.strftime('%Y-%m-%d') if user.subscription_end_date else 'N/A' }}){% else %}Not Subscribed{% endif %}</td></tr>
+                        {% elif user.role == 'hr' %}
+                            <tr><th>Total Jobs Posted</th><td>{{ user.jobs|length }}</td></tr>
+                        {% endif %}
+                        <tr><th>Documents Uploaded</th><td>{{ user.documents|length }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

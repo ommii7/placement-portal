@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Top Row: Profile and Subscription Side by Side -->
+    <div class="row g-4 mb-5">
+        <!-- Profile Card -->
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4 h-100" style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%); border-left: 4px solid #14b8a6;">
+                <div class="card-body d-flex align-items-center p-4">
+                    <div class="flex-shrink-0">
+                        {% if current_user.profile_picture %}
+                            <img src="{{ url_for('static', filename=current_user.profile_picture) }}" class="rounded-circle border border-2 border-teal" width="90" height="90" style="object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-teal bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 90px; height: 90px;">
+                                <i class="fas fa-user-graduate fa-3x text-teal"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1 ms-4">
+                        <h4 class="mb-1">{{ current_user.full_name or current_user.email.split('@')[0] }}</h4>
+                        <p class="text-muted mb-2">{{ current_user.email }}</p>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <span class="badge bg-light text-dark"><i class="fas fa-graduation-cap me-1"></i> {{ current_user.college|truncate(20) or 'College' }}</span>
+                            <span class="badge bg-light text-dark"><i class="fas fa-book me-1"></i> {{ current_user.course|truncate(20) or 'Course' }}</span>
+                        </div>
+                        <a href="{{ url_for('profile') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Card -->
+        <div class="col-md-6">
+            {% if not is_subscribed %}
+            <div class="card shadow-sm border-0 rounded-4 h-100" style="background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%); color: white;">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-crown fa-2x mb-2"></i>
+                    <h5 class="fw-bold">Upgrade to Premium</h5>
+                    <p class="small opacity-75">Get access to 5+ LPA jobs</p>
+                    <h3 class="fw-bold">₹399 <small class="fw-normal">/ month</small></h3>
+                    <a href="{{ url_for('payment') }}" class="btn btn-light mt-2 px-4 rounded-pill fw-bold text-teal">Subscribe Now</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="card shadow-sm border-0 rounded-4 h-100" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h5 class="fw-bold">Premium Active</h5>
+                    <p class="small opacity-75">Full access to premium jobs</p>
+                    <small>Valid till: {{ current_user.subscription_end_date.strftime('%d %b %Y') if current_user.subscription_end_date else 'N/A' }}</small>
+                    <hr class="my-3 bg-white" style="opacity: 0.2;">
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{{ url_for('upgrade_plan') }}" class="btn btn-sm btn-light">Upgrade</a>
+                        <a href="{{ url_for('cancel_subscription') }}" 
+                           class="btn btn-sm btn-outline-light" 
+                           data-confirm 
+                           data-confirm-title="Cancel Subscription" 
+                           data-confirm-message="Are you sure? You will not receive a refund for any unused period."
+                           data-confirm-type="danger">Cancel</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recommended Jobs Section -->
+    <div class="row mt-2">
+        <div class="col-12">
+            <h4 class="mb-3"><i class="fas fa-thumbs-up me-2"></i>Recommended Jobs</h4>
+            <div class="row">
+                {% if recommended_jobs %}
+                    {% for job in recommended_jobs %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body">
+                                <h5>{{ job.title }}</h5>
+                                <p class="text-muted">{{ job.company }} - {{ job.location }}</p>
+                                <p>💰 {{ job.salary_min }} - {{ job.salary_max }} LPA</p>
+                                <a href="{{ url_for('job_detail', job_id=job.id) }}" class="btn btn-primary btn-sm rounded-pill">View</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 alert alert-info">No recommended jobs at the moment.</div>
+                {% endif %}
+            </div>
+
+            <hr class="my-4">
+
+            <!-- My Applications Section -->
+            <h4 class="mb-3"><i class="fas fa-list-alt me-2"></i>My Applications</h4>
+            <div class="list-group">
+                {% for app in applications %}
+                <div class="list-group-item flex-column align-items-start mb-2 shadow-sm border-0 rounded-3">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ app.job.title }} at {{ app.job.company }}</h5>
+                        <span class="badge 
+                            {% if app.status == 'pending' %}bg-warning text-dark
+                            {% elif app.status == 'shortlisted' %}bg-success
+                            {% elif app.status == 'rejected' %}bg-danger
+                            {% elif app.status == 'hired' %}bg-primary
+                            {% else %}bg-secondary{% endif %} rounded-pill">
+                            {{ app.status|upper }}
+                        </span>
+                    </div>
+                    <p class="mb-1"><small>Applied on {{ app.applied_at.strftime('%Y-%m-%d %H:%M') }}</small></p>
+                    
+                    {% if app.status == 'shortlisted' or app.status == 'hired' %}
+                    <div class="mt-2 p-3 bg-light rounded-3">
+                        <h6><i class="fas fa-building"></i> Company & HR Details</h6>
+                        <div id="hr-details-{{ app.job.id }}" class="small">Loading...</div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">No applications yet. Browse jobs and apply!</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% for app in applications %}
+        {% if app.status == 'shortlisted' or app.status == 'hired' %}
+        fetch('/job/{{ app.job.id }}/hr-details')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.error) {
+                    const container = document.getElementById('hr-details-{{ app.job.id }}');
+                    container.innerHTML = `
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr><td width="35%"><strong>Company:</strong></td><td>${data.company_name || 'N/A'}</td></tr>
+                            <tr><td><strong>Website:</strong></td><td>${data.company_website ? `<a href="${data.company_website}" target="_blank">${data.company_website}</a>` : 'N/A'}</td></tr>
+                            <tr><td><strong>HR Name:</strong></td><td>${data.hr_name || 'N/A'}</td></tr>
+                            <tr><td><strong>HR Email:</strong></td><td>${data.hr_email || 'N/A'}</td></tr>
+                            <tr><td><strong>HR Phone:</strong></td><td>${data.hr_phone || 'N/A'}</td></tr>
+                        </table>
+                        ${data.source === 'external' ? '<small class="text-muted">' + (data.message || '') + '</small>' : ''}
+                    `;
+                } else {
+                    document.getElementById('hr-details-{{ app.job.id }}').innerHTML = '<span class="text-muted">Details not available</span>';
+                }
+            })
+            .catch(() => {
+                document.getElementById('hr-details-{{ app.job.id }}').innerHTML = '<span class="text-muted">Failed to load details</span>';
+            });
+        {% endif %}
+    {% endfor %}
+});
+</script>
+{% endblock %}

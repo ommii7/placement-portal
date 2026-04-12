@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Upgrade Plan - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">Upgrade Your Plan</h1>
+        <p class="lead text-muted">Get more savings and additional benefits</p>
+    </div>
+
+    <!-- Current Plan Info -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 text-center" style="background: #f8f9fc;">
+                <div class="card-body py-3">
+                    <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+                    <h5>Your Current Plan</h5>
+                    <h3 class="fw-bold text-primary">{{ current_plan|capitalize }}</h3>
+                    <p class="text-muted">
+                        {% if current_plan == 'monthly' %}₹399 / month
+                        {% elif current_plan == 'quarterly' %}₹999 for 3 months
+                        {% else %}₹3499 for 12 months{% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade Options -->
+    {% if upgrade_options %}
+    <div class="row g-4 justify-content-center">
+        {% for option in upgrade_options %}
+        <div class="col-md-5">
+            <div class="card h-100 shadow-lg border-0 rounded-4 position-relative">
+                <div class="position-absolute top-0 start-50 translate-middle badge bg-warning text-dark px-3 py-2 rounded-pill">
+                    🔥 {{ option.badge }}
+                </div>
+                <div class="card-header text-center bg-{{ option.color }} text-white rounded-top-4 py-3">
+                    <i class="fas fa-chart-line fa-3x mb-2"></i>
+                    <h3 class="mb-0">{{ option.name }}</h3>
+                </div>
+                <div class="card-body text-center">
+                    <h2 class="display-4 fw-bold">₹{{ option.price }}</h2>
+                    <p class="text-muted">
+                        {% if option.name == 'Quarterly' %}for 3 months (₹333/month)
+                        {% else %}for 12 months (₹292/month){% endif %}
+                    </p>
+                    <ul class="list-unstyled text-start mt-3">
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Save ₹{{ option.savings }} vs {{ current_plan }}</li>
+                        {% if option.name == 'Quarterly' %}
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Interview preparation guide</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Early access to top drives</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i> All monthly benefits</li>
+                        {% else %}
+                        <li><i class="fas fa-check-circle text-success me-2"></i> Premium badge on profile</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i> 1-on-1 career counseling</li>
+                        <li><i class="fas fa-check-circle text-success me-2"></i> All quarterly benefits</li>
+                        {% endif %}
+                    </ul>
+                    <form method="POST" class="mt-4">
+                        <input type="hidden" name="plan" value="{{ option.name.lower() }}">
+                        <button type="submit" class="btn btn-{{ option.color }} btn-lg w-100 rounded-pill text-white">Upgrade to {{ option.name }}</button>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center small">
+                    {% if option.name == 'Quarterly' %}Billed every 3 months. Cancel anytime.
+                    {% else %}Best savings – pay once, use all year.{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Warning Note -->
+    <div class="row mt-5">
+        <div class="col-md-8 mx-auto">
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Note:</strong> Upgrading will immediately charge the new plan price. No refund will be given for the remaining time on your current {{ current_plan }} plan.
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- No upgrade options (yearly plan) -->
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body py-5">
+                    <i class="fas fa-crown fa-4x text-warning mb-3"></i>
+                    <h3>You're on the Best Plan!</h3>
+                    <p class="text-muted">You already have the Yearly plan – the most savings and benefits.</p>
+                    <a href="{{ url_for('student_dashboard') }}" class="btn btn-primary rounded-pill px-4">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Back Link (if upgrades exist) -->
+    {% if upgrade_options %}
+    <div class="text-center mt-4">
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .rounded-4 { border-radius: 1rem; }
+    .rounded-top-4 { border-radius: 1rem 1rem 0 0; }
+    .card { transition: transform 0.3s ease; }
+    .card:hover { transform: translateY(-10px); }
+</style>
+{% endblock %}

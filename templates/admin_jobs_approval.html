@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Pending Jobs - Admin{% endblock %}
+
+{% block content %}
+<h2>Pending Job Approvals</h2>
+{% if jobs %}
+    {% for job in jobs %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <h5>{{ job.title }}</h5>
+            <p class="text-muted">{{ job.company }} - {{ job.location }}</p>
+            <p>{{ job.description[:150] }}...</p>
+            <p><strong>Source:</strong> {{ job.source }}</p>
+            <div class="mt-2">
+                <a href="{{ url_for('approve_job', job_id=job.id) }}" class="btn btn-success btn-sm">Approve</a>
+                <a href="{{ url_for('admin_reject_job', job_id=job.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Reject this job?')">Reject</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-success">No pending jobs.</div>
+{% endif %}
+<a href="{{ url_for('admin_revenue') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}

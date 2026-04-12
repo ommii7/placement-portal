@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Subscribe - Placement Portal{% endblock %}
+
+{% block content %}
+<style>
+    .pricing-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .pricing-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .pricing-card .card-header {
+        padding: 30px 20px;
+        text-align: center;
+    }
+    .pricing-card .price {
+        font-size: 48px;
+        font-weight: 800;
+    }
+    .pricing-card .price small {
+        font-size: 16px;
+        font-weight: normal;
+    }
+    .pricing-card .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+    .pricing-card .feature-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .pricing-card .feature-list li:last-child {
+        border-bottom: none;
+    }
+    .pricing-card .feature-list i {
+        width: 25px;
+        color: #28a745;
+    }
+    .badge-best {
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        background: linear-gradient(135deg, #ffd89b, #c7e9fb);
+        color: #333;
+        font-weight: bold;
+        padding: 5px 15px;
+        border-radius: 30px;
+        font-size: 12px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .bg-gradient-monthly {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .bg-gradient-quarterly {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    .bg-gradient-yearly {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: transform 0.2s;
+    }
+    .btn-gradient:hover {
+        transform: scale(1.02);
+        color: white;
+    }
+    .btn-gradient-quarterly {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+    .btn-gradient-yearly {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            <i class="fas fa-crown text-warning me-2"></i>Choose Your Plan
+        </h1>
+        <p class="lead text-muted">Get access to 1000+ premium jobs (5+ LPA) from top companies</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Monthly Plan -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card pricing-card shadow h-100">
+                <div class="card-header bg-gradient-monthly text-white">
+                    <i class="fas fa-calendar-alt fa-3x mb-2"></i>
+                    <h3 class="mb-0">Monthly</h3>
+                    <p class="opacity-75 small mb-0">Perfect for beginners</p>
+                </div>
+                <div class="card-body text-center">
+                    <div class="price">₹399 <small>/month</small></div>
+                    <ul class="feature-list text-start">
+                        <li><i class="fas fa-check-circle"></i> Access all premium jobs</li>
+                        <li><i class="fas fa-check-circle"></i> Apply to 1000+ jobs</li>
+                        <li><i class="fas fa-check-circle"></i> Priority support</li>
+                        <li><i class="fas fa-check-circle"></i> Resume review</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('create_subscription') }}">
+                        <input type="hidden" name="plan" value="monthly">
+                        <button type="submit" class="btn btn-gradient w-100">
+                            <i class="fas fa-rocket me-2"></i>Subscribe Now
+                        </button>
+                    </form>
+                    <p class="text-muted small mt-3"><i class="fas fa-ban me-1"></i>Cancel anytime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quarterly Plan (Best Value) -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card pricing-card shadow h-100 position-relative">
+                <span class="badge-best"><i class="fas fa-fire me-1"></i>Most Popular</span>
+                <div class="card-header bg-gradient-quarterly text-white">
+                    <i class="fas fa-chart-line fa-3x mb-2"></i>
+                    <h3 class="mb-0">Quarterly</h3>
+                    <p class="opacity-75 small mb-0">Best value plan</p>
+                </div>
+                <div class="card-body text-center">
+                    <div class="price">₹999 <small>/3 months</small></div>
+                    <p class="text-success fw-bold">Save ₹198 <small>(₹333/month)</small></p>
+                    <ul class="feature-list text-start">
+                        <li><i class="fas fa-check-circle"></i> Everything in Monthly</li>
+                        <li><i class="fas fa-check-circle"></i> Save ₹198</li>
+                        <li><i class="fas fa-check-circle"></i> Interview preparation guide</li>
+                        <li><i class="fas fa-check-circle"></i> Early access to top drives</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('create_subscription') }}">
+                        <input type="hidden" name="plan" value="quarterly">
+                        <button type="submit" class="btn btn-gradient-quarterly w-100">
+                            <i class="fas fa-gem me-2"></i>Subscribe Now
+                        </button>
+                    </form>
+                    <p class="text-muted small mt-3"><i class="fas fa-ban me-1"></i>Cancel anytime</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yearly Plan -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card pricing-card shadow h-100">
+                <div class="card-header bg-gradient-yearly text-white">
+                    <i class="fas fa-award fa-3x mb-2"></i>
+                    <h3 class="mb-0">Yearly</h3>
+                    <p class="opacity-75 small mb-0">Best savings</p>
+                </div>
+                <div class="card-body text-center">
+                    <div class="price">₹3,499 <small>/year</small></div>
+                    <p class="text-success fw-bold">Save ₹1,289 <small>(₹292/month)</small></p>
+                    <ul class="feature-list text-start">
+                        <li><i class="fas fa-check-circle"></i> Everything in Quarterly</li>
+                        <li><i class="fas fa-check-circle"></i> Save ₹1,289</li>
+                        <li><i class="fas fa-check-circle"></i> Premium badge on profile</li>
+                        <li><i class="fas fa-check-circle"></i> 1-on-1 career counseling</li>
+                    </ul>
+                    <form method="POST" action="{{ url_for('create_subscription') }}">
+                        <input type="hidden" name="plan" value="yearly">
+                        <button type="submit" class="btn btn-gradient-yearly w-100">
+                            <i class="fas fa-star-of-life me-2"></i>Subscribe Now
+                        </button>
+                    </form>
+                    <p class="text-muted small mt-3"><i class="fas fa-ban me-1"></i>Cancel anytime</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trust Badges Section -->
+    <div class="row mt-5 pt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0 bg-light rounded-4">
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <i class="fas fa-lock fa-2x text-primary mb-2"></i>
+                            <p class="mb-0 fw-bold">Secure Payment</p>
+                            <small class="text-muted">256-bit SSL encryption</small>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-refresh fa-2x text-primary mb-2"></i>
+                            <p class="mb-0 fw-bold">Cancel Anytime</p>
+                            <small class="text-muted">No questions asked</small>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-headset fa-2x text-primary mb-2"></i>
+                            <p class="mb-0 fw-bold">Priority Support</p>
+                            <small class="text-muted">24/7 dedicated team</small>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fas fa-file-invoice-dollar fa-2x text-primary mb-2"></i>
+                            <p class="mb-0 fw-bold">GST Invoice</p>
+                            <small class="text-muted">For tax purposes</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Money Back Guarantee -->
+    <div class="text-center mt-4">
+        <div class="alert alert-success shadow-sm rounded-4 d-inline-block px-4">
+            <i class="fas fa-shield-alt me-2"></i>
+            <strong>7-Day Money Back Guarantee</strong> – Not satisfied? Get a full refund within 7 days.
+        </div>
+    </div>
+</div>
+{% endblock %}

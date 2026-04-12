@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Student Details - Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-user-graduate"></i> Student Profile</h2>
+        <a href="{{ url_for('admin_applications') }}" class="btn btn-secondary">← Back to Applications</a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    {% if student.profile_picture %}
+                        <img src="{{ url_for('static', filename=student.profile_picture) }}" class="rounded-circle mb-3" width="150" height="150" style="object-fit: cover;">
+                    {% else %}
+                        <i class="fas fa-user-circle fa-5x text-secondary mb-3"></i>
+                    {% endif %}
+                    <h4>{{ student.full_name or 'N/A' }}</h4>
+                    <p class="text-muted">{{ student.email }}</p>
+                    <p><span class="badge bg-primary">Student</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow mb-3">
+                <div class="card-header bg-primary text-white">Personal Information</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th style="width: 35%;">Full Name</th><td>{{ student.full_name or 'N/A' }}</td></tr>
+                        <tr><th>Email</th><td>{{ student.email }}</td></tr>
+                        <tr><th>Phone</th><td>{{ student.phone or 'N/A' }}</td></tr>
+                        <tr><th>Date of Birth</th><td>{{ student.dob.strftime('%Y-%m-%d') if student.dob else 'N/A' }}</td></tr>
+                        <tr><th>Gender</th><td>{{ student.gender or 'N/A' }}</td></tr>
+                        <tr><th>Member Since</th><td>{{ student.created_at.strftime('%Y-%m-%d') if student.created_at else 'N/A' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow mb-3">
+                <div class="card-header bg-success text-white">Education</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th>College</th><td>{{ student.college or 'N/A' }}</td></tr>
+                        <tr><th>Course</th><td>{{ student.course or 'N/A' }}</td></tr>
+                        <tr><th>Branch</th><td>{{ student.branch or 'N/A' }}</td></tr>
+                        <tr><th>Graduation Year</th><td>{{ student.graduation_year or 'N/A' }}</td></tr>
+                        <tr><th>CGPA</th><td>{{ student.cgpa or 'N/A' }}</td></tr>
+                        <tr><th>Backlogs</th><td>{{ student.backlogs or '0' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow mb-3">
+                <div class="card-header bg-info text-white">Professional Details</div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tr><th>Skills</th><td>{{ student.skills or 'N/A' }}</td></tr>
+                        <tr><th>Experience</th><td>{{ student.experience or 'N/A' }}</td></tr>
+                        <tr><th>Certifications</th><td>{{ student.certifications or 'N/A' }}</td></tr>
+                        <tr><th>Portfolio/GitHub</th><td>{% if student.portfolio_url %}<a href="{{ student.portfolio_url }}" target="_blank">{{ student.portfolio_url }}</a>{% else %}N/A{% endif %}</td></tr>
+                        <tr><th>Expected Salary</th><td>{{ student.expected_salary or 'N/A' }} LPA</td></tr>
+                        <tr><th>Preferred Locations</th><td>{{ student.preferred_locations or 'N/A' }}</td></tr>
+                        <tr><th>Languages</th><td>{{ student.languages or 'N/A' }}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">Resume & Bio</div>
+                <div class="card-body">
+                    <p><strong>Bio:</strong></p>
+                    <p>{{ student.bio or 'N/A' }}</p>
+                    <p><strong>Resume:</strong> 
+                        {% if student.resume_path %}
+                            <a href="{{ url_for('static', filename=student.resume_path.split('/')[-1] if '/' in student.resume_path else student.resume_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">Download Resume</a>
+                        {% else %}
+                            Not uploaded
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

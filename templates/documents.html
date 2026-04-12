@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Document Locker - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-gradient-primary text-white rounded-top-4">
+            <h4 class="mb-0"><i class="fas fa-locker me-2"></i> Secure Document Locker</h4>
+            <p class="small mb-0 opacity-75">Store and manage your important documents securely</p>
+        </div>
+        <div class="card-body p-4">
+            <!-- Upload Form -->
+            <div class="bg-light p-4 rounded-4 mb-5">
+                <h5 class="mb-3"><i class="fas fa-cloud-upload-alt me-2"></i> Upload New Document</h5>
+                <form method="POST" action="{{ url_for('upload_document') }}" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Document Type</label>
+                            <select name="document_type" id="documentTypeSelect" class="form-select" required>
+                                <option value="resume">📄 Resume / CV</option>
+                                <option value="degree">🎓 Degree Certificate</option>
+                                <option value="id_proof">🆔 ID Proof (Aadhar/PAN)</option>
+                                <option value="offer_letter">📑 Offer Letter</option>
+                                <option value="other">📁 Other (Custom)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4" id="customNameDiv" style="display: none;">
+                            <label class="form-label fw-bold">Custom Document Name</label>
+                            <input type="text" name="custom_document_name" class="form-control" placeholder="e.g., Internship Certificate">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Choose File</label>
+                            <input type="file" name="document" class="form-control" required accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                            <small class="text-muted">Max 16MB. Allowed: PDF, JPG, PNG, DOC, DOCX</small>
+                        </div>
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-upload me-2"></i>Upload
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Documents Grid -->
+            <h5 class="mb-3"><i class="fas fa-folder-open me-2"></i> Your Documents ({{ documents|length }})</h5>
+            {% if documents %}
+                <div class="row g-4">
+                    {% for doc in documents %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm border-0 rounded-3 document-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="doc-icon">
+                                        {% if doc.document_type == 'resume' %}
+                                            <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                        {% elif doc.document_type == 'degree' %}
+                                            <i class="fas fa-graduation-cap fa-2x text-success"></i>
+                                        {% elif doc.document_type == 'id_proof' %}
+                                            <i class="fas fa-id-card fa-2x text-info"></i>
+                                        {% elif doc.document_type == 'offer_letter' %}
+                                            <i class="fas fa-file-signature fa-2x text-warning"></i>
+                                        {% else %}
+                                            <i class="fas fa-file fa-2x text-secondary"></i>
+                                        {% endif %}
+                                    </div>
+                                    <span class="badge bg-secondary">{{ doc.file_size // 1024 }} KB</span>
+                                </div>
+                                <h6 class="card-title mb-1">
+                                    {% if doc.document_type == 'other' and doc.custom_name %}
+                                        {{ doc.custom_name }}
+                                    {% else %}
+                                        {{ doc.document_type|replace('_', ' ')|title }}
+                                    {% endif %}
+                                </h6>
+                                <p class="card-text small text-muted mb-2">
+                                    <i class="fas fa-calendar-alt me-1"></i> {{ doc.uploaded_at.strftime('%d %b %Y') }}<br>
+                                    <i class="fas fa-file me-1"></i> {{ doc.file_name[:30] }}{% if doc.file_name|length > 30 %}...{% endif %}
+                                </p>
+                                <div class="btn-group w-100 mt-2" role="group">
+                                    <a href="{{ url_for('view_document', doc_id=doc.id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="{{ url_for('download_document', doc_id=doc.id) }}" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
+                                    <a href="{{ url_for('delete_document', doc_id=doc.id) }}" class="btn btn-sm btn-outline-danger" 
+                                       onclick="return confirm('Delete this document permanently?')">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5 bg-light rounded-4">
+                    <i class="fas fa-folder-open fa-4x text-muted mb-3"></i>
+                    <p class="mb-0">No documents uploaded yet.</p>
+                    <p class="small text-muted">Use the form above to upload your important documents.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    const select = document.getElementById('documentTypeSelect');
+    const customDiv = document.getElementById('customNameDiv');
+    select.addEventListener('change', function() {
+        if (this.value === 'other') {
+            customDiv.style.display = 'block';
+        } else {
+            customDiv.style.display = 'none';
+        }
+    });
+</script>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .document-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .document-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock %}

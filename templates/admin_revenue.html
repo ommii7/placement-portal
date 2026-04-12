@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Revenue Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4"><i class="fas fa-chart-line"></i> Revenue Dashboard</h2>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <h5>Total Revenue</h5>
+                    <h2>₹{{ "{:,.0f}".format(total_revenue) }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <h5>Total Users</h5>
+                    <h2>{{ total_users }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body">
+                    <h5>Approved Jobs</h5>
+                    <h2>{{ approved_jobs }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <h5>Pending Jobs</h5>
+                    <h2>{{ pending_jobs|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-bolt"></i> Quick Actions</h5>
+        </div>
+        <div class="card-body">
+            <a href="{{ url_for('admin_users') }}" class="btn btn-info">Manage Users</a>
+            <a href="{{ url_for('admin_all_jobs') }}" class="btn btn-secondary">Manage All Jobs</a>
+            <a href="{{ url_for('fetch_external') }}" class="btn btn-info">Fetch External Jobs</a>
+            <a href="{{ url_for('admin_applications') }}" class="btn btn-primary">View All Applications</a>
+            <a href="{{ url_for('admin_external_jobs') }}" class="btn btn-success">External Jobs Pending</a>
+        </div>
+    </div>
+
+    <!-- Pending Jobs Section -->
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h5><i class="fas fa-clock"></i> Pending Approvals ({{ pending_jobs|length }})</h5>
+        </div>
+        <div class="card-body">
+            {% if pending_jobs %}
+                {% for job in pending_jobs %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>{{ job.title }}</h5>
+                                <p class="text-muted">{{ job.company }} - {{ job.location }}</p>
+                                <p>{{ job.description[:150] }}...</p>
+                                <p><strong>Salary:</strong> {{ job.salary_min }} - {{ job.salary_max }} LPA</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <a href="{{ url_for('approve_job', job_id=job.id) }}" class="btn btn-success btn-sm">Approve</a>
+                                <a href="{{ url_for('admin_reject_job', job_id=job.id) }}" class="btn btn-danger btn-sm" 
+                                   onclick="return confirm('Reject this job? It will be deleted.')">Reject</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-success">No pending jobs. All clear!</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

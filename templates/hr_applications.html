@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Applications for {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-users"></i> Applications for "{{ job.title }}"</h2>
+        <a href="{{ url_for('hr_dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    {% if applications %}
+        <div class="row">
+            {% for app in applications %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header {% if app.status == 'shortlisted' %}bg-success text-white{% elif app.status == 'rejected' %}bg-danger text-white{% else %}bg-primary text-white{% endif %}">
+                        <h5 class="mb-0">{{ app.student.full_name or app.student.email }}</h5>
+                        <small>Applied on {{ app.applied_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong><i class="fas fa-envelope"></i> Email:</strong><br> {{ app.student.email }}</p>
+                                <p><strong><i class="fas fa-phone"></i> Phone:</strong><br> {{ app.student.phone or 'Not provided' }}</p>
+                                <p><strong><i class="fas fa-graduation-cap"></i> College:</strong><br> {{ app.student.college or 'Not provided' }}</p>
+                                <p><strong><i class="fas fa-book"></i> Course:</strong><br> {{ app.student.course or 'Not provided' }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong><i class="fas fa-code"></i> Skills:</strong><br> {{ app.student.skills or 'Not provided' }}</p>
+                                <p><strong><i class="fas fa-briefcase"></i> Experience:</strong><br> {{ app.student.experience or 'Not provided' }}</p>
+                                <p><strong><i class="fas fa-certificate"></i> Certifications:</strong><br> {{ app.student.certifications or 'Not provided' }}</p>
+                                <p><strong><i class="fas fa-file-alt"></i> Resume:</strong><br>
+                                    {% if app.student.resume_path %}
+                                        <a href="{{ url_for('static', filename=app.student.resume_path.split('/')[-1] if '/' in app.student.resume_path else app.student.resume_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">Download Resume</a>
+                                    {% else %}
+                                        Not uploaded
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><strong>Current Status:</strong> 
+                                <span class="badge {% if app.status == 'pending' %}bg-warning{% elif app.status == 'shortlisted' %}bg-success{% elif app.status == 'rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ app.status|title }}
+                                </span>
+                            </span>
+                            <div class="btn-group">
+                                {% if app.status != 'shortlisted' %}
+                                <a href="{{ url_for('hr_approve_application', app_id=app.id) }}" class="btn btn-success btn-sm" onclick="return confirm('Approve this application? Student will be shortlisted.')">
+                                    <i class="fas fa-check-circle"></i> Approve
+                                </a>
+                                {% endif %}
+                                {% if app.status != 'rejected' %}
+                                <a href="{{ url_for('hr_reject_application', app_id=app.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Reject this application? This cannot be undone.')">
+                                    <i class="fas fa-times-circle"></i> Reject
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No applications yet for this job.</div>
+    {% endif %}
+</div>
+{% endblock %}

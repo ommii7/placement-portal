@@ -1,0 +1,569 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h3 class="mb-0"><i class="fas fa-user-plus me-2"></i>Create Your Account</h3>
+                    <p class="mb-0 mt-2">Join thousands of students and recruiters on Placement Portal</p>
+                </div>
+                <div class="card-body p-5">
+                    <!-- Role Selection Tabs -->
+                    <ul class="nav nav-tabs mb-4" id="roleTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="student-tab" data-bs-toggle="tab" data-bs-target="#student" type="button" role="tab">
+                                <i class="fas fa-graduation-cap me-2"></i>
+                                <span style="color: black;">Student</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="hr-tab" data-bs-toggle="tab" data-bs-target="#hr" type="button" role="tab">
+                                <i class="fas fa-building me-2"></i>
+                                <span style="color: black;">HR / Recruiter</span>
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="roleTabContent">
+                        <!-- Student Registration Form -->
+                        <div class="tab-pane fade show active" id="student" role="tabpanel">
+                            <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
+                                <input type="hidden" name="role" value="student">
+                                
+                                <!-- Personal Information -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-user-circle me-2"></i>Personal Information
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="full_name" required 
+                                                       placeholder="Enter your full name">
+                                                <small class="text-muted">As per your official documents</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" name="email" required 
+                                                       placeholder="you@example.com">
+                                                <small class="text-muted">We'll send notifications to this email</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                                <input type="tel" class="form-control" name="phone" required 
+                                                       placeholder="+91 XXXXX XXXXX">
+                                                <small class="text-muted">Include country code</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Date of Birth</label>
+                                                <input type="date" class="form-control" name="dob">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Gender</label>
+                                                <select class="form-select" name="gender">
+                                                    <option value="">Select Gender</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                    <option value="other">Other</option>
+                                                    <option value="prefer_not">Prefer not to say</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Profile Picture</label>
+                                                <input type="file" class="form-control" name="profile_picture" accept="image/*">
+                                                <small class="text-muted">Upload a professional photo (max 2MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Educational Details -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-university me-2"></i>Educational Details
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">College/University <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="college" required 
+                                                       placeholder="e.g., IIT Bombay, Delhi University">
+                                                <small class="text-muted">Full name of your institution</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Course/Degree <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="course" required 
+                                                       placeholder="e.g., B.Tech, MBA, MCA">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Specialization/Branch</label>
+                                                <input type="text" class="form-control" name="branch" 
+                                                       placeholder="e.g., Computer Science, Mechanical">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Graduation Year <span class="text-danger">*</span></label>
+                                                <select class="form-select" name="graduation_year" required>
+                                                    <option value="">Select Year</option>
+                                                    <option value="2024">2024</option>
+                                                    <option value="2025">2025</option>
+                                                    <option value="2026">2026</option>
+                                                    <option value="2027">2027</option>
+                                                    <option value="2028">2028</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">CGPA/Percentage</label>
+                                                <input type="number" step="0.01" class="form-control" name="cgpa" 
+                                                       placeholder="e.g., 8.5 or 85%">
+                                                <small class="text-muted">Current or latest CGPA</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Backlogs (if any)</label>
+                                                <input type="number" class="form-control" name="backlogs" value="0" min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Professional Details -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-briefcase me-2"></i>Professional Details
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Skills (comma separated)</label>
+                                                <input type="text" class="form-control" name="skills" 
+                                                       placeholder="e.g., Python, Java, React, SQL, AWS">
+                                                <small class="text-muted">List your technical and soft skills</small>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Work Experience (if any)</label>
+                                                <textarea class="form-control" name="experience" rows="3" 
+                                                          placeholder="Describe your internships, projects, or work experience..."></textarea>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Certifications</label>
+                                                <textarea class="form-control" name="certifications" rows="2" 
+                                                          placeholder="List your certifications (e.g., AWS Certified, Google Data Analytics)"></textarea>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Portfolio/GitHub/LinkedIn URL</label>
+                                                <input type="url" class="form-control" name="portfolio_url" 
+                                                       placeholder="https://github.com/yourusername">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Resume/CV <span class="text-danger">*</span></label>
+                                                <input type="file" class="form-control" name="resume" accept=".pdf,.doc,.docx" required>
+                                                <small class="text-muted">Upload your latest resume (PDF, DOC, DOCX - max 5MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Information -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-info-circle me-2"></i>Additional Information
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Bio / About Me</label>
+                                                <textarea class="form-control" name="bio" rows="3" 
+                                                          placeholder="Tell us about yourself, your career goals, and what you're looking for..."></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Preferred Job Locations</label>
+                                                <input type="text" class="form-control" name="preferred_locations" 
+                                                       placeholder="e.g., Bangalore, Mumbai, Delhi, Remote">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Expected Salary (LPA)</label>
+                                                <input type="number" step="0.5" class="form-control" name="expected_salary" 
+                                                       placeholder="e.g., 8.5">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Languages Known</label>
+                                                <input type="text" class="form-control" name="languages" 
+                                                       placeholder="e.g., English, Hindi, Marathi">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Account Security -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-lock me-2"></i>Account Security
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Password <span class="text-danger">*</span></label>
+                                                <input type="password" class="form-control" name="password" required 
+                                                       id="student_password" minlength="6">
+                                                <small class="text-muted">Minimum 6 characters</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                                <input type="password" class="form-control" name="confirm_password" required 
+                                                       id="student_confirm_password">
+                                            </div>
+                                        </div>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="terms" id="terms_student" required>
+                                            <label class="form-check-label" for="terms_student">
+                                                I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a> 
+                                                and <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="newsletter" id="newsletter">
+                                            <label class="form-check-label" for="newsletter">
+                                                Subscribe to job alerts and newsletter
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-user-graduate me-2"></i>Register as Student
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- HR Registration Form -->
+                        <div class="tab-pane fade" id="hr" role="tabpanel">
+                            <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
+                                <input type="hidden" name="role" value="hr">
+                                
+                                <!-- Company Information -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-building me-2"></i>Company Information
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Company Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="company_name" required 
+                                                       placeholder="e.g., Google, Microsoft, Amazon">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Company Website</label>
+                                                <input type="url" class="form-control" name="company_website" 
+                                                       placeholder="https://www.company.com">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Company Email <span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" name="email" required 
+                                                       placeholder="hr@company.com">
+                                                <small class="text-muted">Must be company domain email</small>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Company Phone</label>
+                                                <input type="tel" class="form-control" name="phone" 
+                                                       placeholder="Company contact number">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Company Logo</label>
+                                                <input type="file" class="form-control" name="company_logo" accept="image/*">
+                                                <small class="text-muted">Upload company logo (PNG, JPG - max 2MB)</small>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Company Description</label>
+                                                <textarea class="form-control" name="company_description" rows="3" 
+                                                          placeholder="Tell us about your company, culture, and values..."></textarea>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Industry Type</label>
+                                                <select class="form-select" name="industry">
+                                                    <option value="">Select Industry</option>
+                                                    <option value="technology">Technology / IT</option>
+                                                    <option value="banking">Banking & Finance</option>
+                                                    <option value="consulting">Consulting</option>
+                                                    <option value="healthcare">Healthcare</option>
+                                                    <option value="manufacturing">Manufacturing</option>
+                                                    <option value="retail">Retail & E-commerce</option>
+                                                    <option value="education">Education</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Company Size</label>
+                                                <select class="form-select" name="company_size">
+                                                    <option value="">Select Size</option>
+                                                    <option value="1-10">1-10 employees</option>
+                                                    <option value="11-50">11-50 employees</option>
+                                                    <option value="51-200">51-200 employees</option>
+                                                    <option value="201-500">201-500 employees</option>
+                                                    <option value="501-1000">501-1000 employees</option>
+                                                    <option value="1000+">1000+ employees</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Company Address</label>
+                                                <textarea class="form-control" name="company_address" rows="2" 
+                                                          placeholder="Full company address"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- HR Personal Information -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-user-tie me-2"></i>HR / Recruiter Information
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="full_name" required 
+                                                       placeholder="Your full name">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Designation <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="designation" required 
+                                                       placeholder="e.g., HR Manager, Talent Acquisition Specialist">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Department</label>
+                                                <select class="form-select" name="department">
+                                                    <option value="hr">Human Resources</option>
+                                                    <option value="talent">Talent Acquisition</option>
+                                                    <option value="recruitment">Recruitment</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Years of Experience</label>
+                                                <input type="number" class="form-control" name="hr_experience" min="0" max="50" 
+                                                       placeholder="Years in recruitment">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">LinkedIn Profile</label>
+                                                <input type="url" class="form-control" name="linkedin" 
+                                                       placeholder="https://linkedin.com/in/yourprofile">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Company Verification Documents -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-file-alt me-2"></i>Verification Documents
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Company PAN / Registration Number</label>
+                                                <input type="text" class="form-control" name="company_pan" 
+                                                       placeholder="Company PAN or Registration Number">
+                                                <small class="text-muted">For verification purposes only</small>
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">GST Certificate (if available)</label>
+                                                <input type="file" class="form-control" name="gst_certificate" accept=".pdf,.jpg,.png">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="form-label">Company ID / Business Proof</label>
+                                                <input type="file" class="form-control" name="business_proof" accept=".pdf,.jpg,.png" required>
+                                                <small class="text-muted">Upload company registration certificate or business proof</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hiring Preferences -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-chart-line me-2"></i>Hiring Preferences
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Positions to Hire</label>
+                                                <input type="text" class="form-control" name="positions_hiring" 
+                                                       placeholder="e.g., Software Engineer, Data Analyst">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Number of Openings</label>
+                                                <input type="number" class="form-control" name="openings_count" min="1" value="1">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Preferred Institutes</label>
+                                                <input type="text" class="form-control" name="preferred_institutes" 
+                                                       placeholder="e.g., IITs, NITs, Tier 1 colleges">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Hiring Timeline</label>
+                                                <select class="form-select" name="hiring_timeline">
+                                                    <option value="immediate">Immediate (0-15 days)</option>
+                                                    <option value="short">Short term (1-2 months)</option>
+                                                    <option value="medium">Medium term (3-6 months)</option>
+                                                    <option value="long">Long term (6+ months)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Account Security -->
+                                <div class="card mb-4 border-0 bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary mb-3">
+                                            <i class="fas fa-lock me-2"></i>Account Security
+                                        </h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Password <span class="text-danger">*</span></label>
+                                                <input type="password" class="form-control" name="password" required 
+                                                       id="hr_password" minlength="6">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                                <input type="password" class="form-control" name="confirm_password" required 
+                                                       id="hr_confirm_password">
+                                            </div>
+                                        </div>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="terms" id="terms_hr" required>
+                                            <label class="form-check-label" for="terms_hr">
+                                                I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a> 
+                                                and confirm that all company information is accurate
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-building me-2"></i>Register as HR / Recruiter
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Terms and Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Account Registration</h6>
+                <p>You must provide accurate and complete information during registration. You are responsible for maintaining the confidentiality of your account.</p>
+                
+                <h6>2. Job Applications</h6>
+                <p>For premium jobs (salary > 5 LPA), a valid subscription is required. Misrepresentation of information may lead to account suspension.</p>
+                
+                <h6>3. Company Verification</h6>
+                <p>HR accounts require company verification. We reserve the right to verify company details before approving job postings.</p>
+                
+                <h6>4. Subscription Terms</h6>
+                <p>Subscription fees are non-refundable. The subscription automatically grants access to premium job applications.</p>
+                
+                <h6>5. Code of Conduct</h6>
+                <p>Users must maintain professional conduct. Spamming, fake job postings, or fraudulent activities will result in immediate account termination.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Agree</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Privacy Policy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>We value your privacy. Your data is protected and will not be shared with third parties without your consent.</p>
+                <ul>
+                    <li>Personal information is used for job matching and notifications</li>
+                    <li>Resume data is used for skill matching and job recommendations</li>
+                    <li>You can request data deletion at any time</li>
+                    <li>Secure encryption for document storage</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Password validation for both forms
+document.getElementById('student_confirm_password')?.addEventListener('change', function() {
+    const password = document.getElementById('student_password').value;
+    const confirm = this.value;
+    if (password !== confirm) {
+        this.setCustomValidity('Passwords do not match');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+
+document.getElementById('hr_confirm_password')?.addEventListener('change', function() {
+    const password = document.getElementById('hr_password').value;
+    const confirm = this.value;
+    if (password !== confirm) {
+        this.setCustomValidity('Passwords do not match');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+
+// Form validation before submit
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        const role = this.querySelector('input[name="role"]').value;
+        if (role === 'hr') {
+            const companyEmail = this.querySelector('input[name="email"]').value;
+            const companyName = this.querySelector('input[name="company_name"]').value;
+            
+            if (companyEmail && !companyEmail.includes('@')) {
+                e.preventDefault();
+                alert('Please enter a valid company email address');
+                return false;
+            }
+            
+            if (!companyName) {
+                e.preventDefault();
+                alert('Please enter company name');
+                return false;
+            }
+        }
+        
+        if (role === 'student') {
+            const resume = this.querySelector('input[name="resume"]');
+            if (resume && !resume.files.length) {
+                e.preventDefault();
+                alert('Please upload your resume');
+                return false;
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
