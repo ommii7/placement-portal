@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h6>Total Users</h6>
+                <h3>{{ total_users }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6>Total Jobs</h6>
+                <h3>{{ total_jobs }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h6>Applications</h6>
+                <h3>{{ total_applications }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <h6>Revenue</h6>
+                <h3>₹{{ total_revenue }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5>Quick Actions</h5>
+    </div>
+    <div class="card-body">
+        <a href="{{ url_for('pending_jobs') }}" class="btn btn-warning">Approve Pending Jobs ({{ pending_jobs }})</a>
+        <a href="{{ url_for('admin_revenue') }}" class="btn btn-info">View Revenue</a>
+    </div>
+</div>
+{% endblock %}

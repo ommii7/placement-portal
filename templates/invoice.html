@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="text-center">Payment Invoice</h2>
+        <hr>
+        <p><strong>Invoice ID:</strong> INV-{{ payment.id }}</p>
+        <p><strong>Date:</strong> {{ payment.created_at.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Amount:</strong> ₹{{ payment.amount }}</p>
+        <p><strong>Status:</strong> {{ payment.status }}</p>
+        <div class="text-center mt-4">
+            <button onclick="window.print()" class="btn btn-primary">Print Invoice</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

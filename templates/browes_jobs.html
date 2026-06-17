@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Jobs - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>Browse All Jobs</h2>
+        <p>Find your dream job from top companies</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">Filter Jobs</h6>
+            </div>
+            <div class="card-body">
+                <form method="GET">
+                    <div class="mb-3">
+                        <label class="form-label">Job Type</label>
+                        <select class="form-select" name="job_type">
+                            <option value="">All Types</option>
+                            <option value="full-time">Full Time</option>
+                            <option value="part-time">Part Time</option>
+                            <option value="internship">Internship</option>
+                            <option value="contract">Contract</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Min Salary (LPA)</label>
+                        <input type="number" class="form-control" name="min_salary" step="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    <a href="{{ url_for('browse_jobs') }}" class="btn btn-secondary w-100 mt-2">Reset</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>{{ job.title }}</h5>
+                            <p class="text-muted mb-1">
+                                <i class="fas fa-building"></i> {{ job.company }} | 
+                                <i class="fas fa-map-marker-alt"></i> {{ job.location }}
+                            </p>
+                            <p class="mb-2">{{ job.description[:150] }}...</p>
+                            <div class="mb-2">
+                                <span class="badge bg-primary">{{ job.job_type }}</span>
+                                <span class="badge bg-success">{{ job.salary_lpa }} LPA</span>
+                                <span class="badge bg-info">{{ job.posted_date.strftime('%Y-%m-%d') }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('job_detail', job_id=job.id) }}" class="btn btn-outline-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            {% if current_user.is_authenticated and current_user.role == 'student' %}
+                                <a href="{{ url_for('apply_job', job_id=job.id) }}" class="btn btn-success mt-2">
+                                    <i class="fas fa-paper-plane"></i> Apply Now
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle"></i> No jobs found.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

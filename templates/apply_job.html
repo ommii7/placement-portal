@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Apply for {{ job.title }} - Placement Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-gradient text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-paper-plane"></i> Apply for {{ job.title }}
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Job Summary -->
+                    <div class="job-summary mb-4 p-3 bg-light rounded">
+                        <h5>Job Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Company:</strong> {{ job.company }}</p>
+                                <p><strong>Location:</strong> {{ job.location }}</p>
+                                <p><strong>Job Type:</strong> {{ job.job_type }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Salary Range:</strong> {{ job.salary_range }}</p>
+                                <p><strong>Experience:</strong> {{ job.experience_required }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="POST" enctype="multipart/form-data" id="applicationForm">
+                        <div class="mb-4">
+                            <label for="resume" class="form-label">
+                                <i class="fas fa-file-upload"></i> Upload Resume <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" class="form-control" id="resume" name="resume" 
+                                   accept=".pdf,.doc,.docx,.txt" required>
+                            <small class="text-muted">Supported formats: PDF, DOC, DOCX, TXT (Max 16MB)</small>
+                            <div class="invalid-feedback">Please upload your resume</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="cover_letter" class="form-label">
+                                <i class="fas fa-envelope-open-text"></i> Cover Letter
+                            </label>
+                            <textarea class="form-control" id="cover_letter" name="cover_letter" 
+                                      rows="6" placeholder="Tell us why you're the perfect fit for this position..."></textarea>
+                            <small class="text-muted">Optional but recommended</small>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> 
+                            Your resume will be automatically parsed to check compatibility with the job requirements.
+                            Make sure your resume is up-to-date!
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Application
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('applicationForm').addEventListener('submit', function(e) {
+    const resumeFile = document.getElementById('resume').files[0];
+    
+    if (!resumeFile) {
+        e.preventDefault();
+        document.getElementById('resume').classList.add('is-invalid');
+        alert('Please upload your resume');
+        return false;
+    }
+    
+    const allowedTypes = ['application/pdf', 'application/msword', 
+                          'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+                          'text/plain'];
+    
+    if (!allowedTypes.includes(resumeFile.type)) {
+        e.preventDefault();
+        alert('Please upload a valid resume file (PDF, DOC, DOCX, or TXT)');
+        return false;
+    }
+    
+    if (resumeFile.size > 16 * 1024 * 1024) {
+        e.preventDefault();
+        alert('File size must be less than 16MB');
+        return false;
+    }
+    
+    return true;
+});
+</script>
+
+<style>
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.job-summary {
+    border-left: 4px solid #667eea;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.form-control:focus, textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+</style>
+{% endblock %}
